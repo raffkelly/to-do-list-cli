@@ -13,7 +13,6 @@ func main() {
 		fmt.Println("Error loading config:", err)
 		os.Exit(1)
 	}
-	fmt.Println("INITIALLY LOGGED IN USER:", config.CurrentUser.Username)
 	err = run(&config)
 	if err != nil {
 		fmt.Println("Error:", err)

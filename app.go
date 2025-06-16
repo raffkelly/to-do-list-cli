@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"time"
 )
 
 func run(config *Config) error {
@@ -16,11 +17,39 @@ func run(config *Config) error {
 	}
 	config.CurrentUser = currentUser
 	config.Users[currentUser.Username] = currentUser
-	fmt.Println("LOGGED IN USER:", config.CurrentUser.Username)
-	fmt.Println("USER JWT:", config.CurrentUser.JWT)
-	fmt.Println("USER REFRESH TOKEN:", config.CurrentUser.RefreshToken)
+	fmt.Println(currentUser.Username, "successfully logged in.")
+	time.Sleep(2 * time.Second)
+	clearScreen()
+	choice, err := config.displayTaskMenu()
+	if err != nil {
+		return err
+	}
+	err = config.handleTaskChoice(choice)
+	if err != nil {
+		return err
+	}
 	return nil
+}
 
+func (config *Config) displayTaskMenu() (string, error) {
+	_, err := config.displayTaskList()
+	if err != nil {
+		return "", err
+	}
+	fmt.Println("===========================================================")
+	fmt.Println("1. Add new task")
+	fmt.Println("2. Delete task")
+	fmt.Println("3. Exit")
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		fmt.Println("Please Enter 1, 2, or 3")
+		fmt.Print("> ")
+		scanner.Scan()
+		input := scanner.Text()
+		if input == "1" || input == "2" || input == "3" {
+			return input, nil
+		}
+	}
 }
 
 func (config *Config) handleUserAuthentication() (UserData, error) {
