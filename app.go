@@ -20,15 +20,16 @@ func run(config *Config) error {
 	fmt.Println(currentUser.Username, "successfully logged in.")
 	time.Sleep(2 * time.Second)
 	clearScreen()
-	choice, err := config.displayTaskMenu()
-	if err != nil {
-		return err
+	for {
+		choice, err := config.displayTaskMenu()
+		if err != nil {
+			return err
+		}
+		err = config.handleTaskChoice(choice)
+		if err != nil {
+			return err
+		}
 	}
-	err = config.handleTaskChoice(choice)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func (config *Config) displayTaskMenu() (string, error) {

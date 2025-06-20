@@ -134,6 +134,11 @@ func (config *Config) handleAddTask() error {
 func (config *Config) handleDeleteTask() error {
 	clearScreen()
 	userTasks, err := config.displayTaskList()
+	if len(userTasks) == 0 {
+		fmt.Println("No tasks to delete.")
+		time.Sleep(2 * time.Second)
+		return nil
+	}
 	if err != nil {
 		return err
 	}
@@ -179,7 +184,7 @@ func (config *Config) displayTaskList() ([]Task, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	clearScreen()
 	//sort userTasks by due date, starting with null dates
 	sortTasks(userTasks)
 	if len(userTasks) != 0 {
